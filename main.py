@@ -1,6 +1,6 @@
 from datetime import datetime
 
-import pandas as pd
+import pandas
 import requests
 from azure.identity import DefaultAzureCredential
 from azure.storage.blob import BlobServiceClient
@@ -94,13 +94,13 @@ def revised_worksplace_annot_totals():
 
     dfs_for_upload = []
 
-    hl_summary_df = pd.DataFrame(hl_summary_ls, columns=['project', 'job_status', 'job_count', 'image_count',
+    hl_summary_df = pandas.DataFrame(hl_summary_ls, columns=['project', 'job_status', 'job_count', 'image_count',
                                                              'labeler_count']).sort_values(by=['project', 'job_status'])
-    detail_summary_df = pd.DataFrame(detail_summary_ls, columns=['project', 'job_status', 'image_count', 'approved',
+    detail_summary_df = pandas.DataFrame(detail_summary_ls, columns=['project', 'job_status', 'image_count', 'approved',
                                                                      'rejected', 'annotated',
                                                                      'unannotated']).sort_values(by=['project',
                                                                                                      'job_status'])
-    job_summary_df = pd.DataFrame(job_summary_ls, columns=['project', 'job_status', 'job_name', 'job_id', 'labeler',
+    job_summary_df = pandas.DataFrame(job_summary_ls, columns=['project', 'job_status', 'job_name', 'job_id', 'labeler',
                                                                'reviewer', 'image_count', 'approved', 'rejected',
                                                                'annotated', 'unannotated']).sort_values(by=['project',
                                                                                                             'job_status'])
