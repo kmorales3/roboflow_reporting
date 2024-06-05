@@ -23,4 +23,4 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: execute reporting run
-        run: main.py
+        run: python -m main.py
