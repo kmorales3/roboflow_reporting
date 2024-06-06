@@ -7,10 +7,7 @@ from azure.storage.blob import BlobServiceClient
 from roboflow import Roboflow
 
 
-def revised_worksplace_annot_totals():
-
-    api_key = 's2mCYG4PUScjH5ZPgjc4'
-    workspace = "ground-ayc"
+def revised_worksplace_annot_totals(api_key, workspace):
 
     hl_summary_ls = []
     detail_summary_ls = []
