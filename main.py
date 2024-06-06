@@ -109,17 +109,14 @@ def revised_worksplace_annot_totals(api_key, workspace):
     return dfs_for_upload
 
 
-def save_to_blob(df_list):
+def save_to_blob(df_list, account_url, container_name):
 
     try:
         print('Azure Blob Storage testing')
 
-        account_url = 'https://rfstats.blob.core.windows.net'
         default_credential = DefaultAzureCredential()
 
         blob_service_client = BlobServiceClient(account_url, credential=default_credential)
-
-        container_name = 'rfhrlystats'
 
         f_name_date = str(datetime.now().date())
         f_name_hour = str(datetime.now().time().hour)
@@ -139,6 +136,3 @@ def save_to_blob(df_list):
 
     except Exception as ex:
         print(f'Exception: {ex}')
-
-
-save_to_blob(revised_worksplace_annot_totals())
