@@ -23,13 +23,7 @@ jobs:
     #     python -m pip install pandas azure-identity azure-storage-blob roboflow
 
     - name: run main.py
-      run: |
-        pwd
-        ls
-        cd ..
-        pwd
-        ls
-        python -m main.py
+      run: python -m main
 
     - name: Get Azure connection
       uses: azure/login@v2
