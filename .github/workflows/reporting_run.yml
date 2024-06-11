@@ -13,17 +13,24 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    env:
+      api_key: ${{ secrets.RF_API_KEY }}
+      wkspace: ${{ secrets.RF_WORKSPACE }}
+      acct_url: ${{ secrets.ACCOUNT_URL }}
+      cont_name: ${{ secrets.CONTAINER_NAME }}
+    
     steps:
     - name: Checkout repo to runner
       uses: actions/checkout@v4
 
-    # - name: install dependencies
-    #   run: |
-    #     python -m pip install --upgrade pip
-    #     python -m pip install pandas azure-identity azure-storage-blob roboflow
+    - name: install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pandas azure-identity azure-storage-blob roboflow
 
     - name: run main.py
-      run: python -m main
+      run: pyhon -c 'import main; save_to_blob(revised_worksplace_annot_totals($api_key, $wkspace), $acct_url, $cont_name)'
 
     - name: Get Azure connection
       uses: azure/login@v2
