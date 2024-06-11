@@ -24,7 +24,9 @@ jobs:
 
     - name: run main.py
       run: |
+        pwd
         cd ..
+        pwd
         python -m main.py
 
     - name: Get Azure connection
