@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 
 import pandas
 import requests
@@ -7,8 +8,11 @@ from azure.storage.blob import BlobServiceClient
 from roboflow import Roboflow
 
 
-def revised_worksplace_annot_totals(api_key, workspace):
+def revised_worksplace_annot_totals():
 
+    api_key = os.getenv('api_key')
+    workspace = os.getenv('wkspace')
+    
     hl_summary_ls = []
     detail_summary_ls = []
     job_summary_ls = []
@@ -109,8 +113,11 @@ def revised_worksplace_annot_totals(api_key, workspace):
     return dfs_for_upload
 
 
-def save_to_blob(df_list, account_url, container_name):
+def save_to_blob(df_list):
 
+    account_url = os.getenv('acct_url')
+    container_name = os.getevn('cont_name')
+    
     try:
         print('Azure Blob Storage testing')
 
@@ -136,3 +143,5 @@ def save_to_blob(df_list, account_url, container_name):
 
     except Exception as ex:
         print(f'Exception: {ex}')
+
+revised_worksplace_annot_totals()
