@@ -113,33 +113,17 @@ def revised_worksplace_annot_totals():
     return dfs_for_upload
 
 
-def save_to_blob(df_list):
-
-    account_url = os.getenv('acct_url')
-    container_name = os.getevn('cont_name')
+def write_to_csv(df_list):
     
     try:
-        print('Azure Blob Storage testing')
-
-        default_credential = DefaultAzureCredential()
-
-        blob_service_client = BlobServiceClient(account_url, credential=default_credential)
-
         f_name_date = str(datetime.now().date())
         f_name_hour = str(datetime.now().time().hour)
-
-        blob_container = blob_service_client.get_container_client(container=container_name)
-
-        if not blob_container.exists():
-            blob_service_client.create_container(container_name)
 
         f_name_prefix = f'{f_name_date}_{f_name_hour}'
 
         for df in df_list:
             local_file_name = f'{f_name_prefix}_{df[1]}.csv'
-            new_blob = blob_service_client.get_blob_client(container=container_name, blob=local_file_name)
-            upload_data = df[0].to_csv(index=False)
-            new_blob.upload_blob(upload_data, blob_type='BlockBlob')
+            df.to_csv('local_file_name', index=False)
 
     except Exception as ex:
         print(f'Exception: {ex}')
