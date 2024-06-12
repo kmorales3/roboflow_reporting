@@ -30,7 +30,7 @@ jobs:
         python -m pip install pandas azure-identity azure-storage-blob roboflow
 
     - name: run main.py
-      run: pyhon -c 'import main; save_to_blob(revised_worksplace_annot_totals($api_key, $wkspace), $acct_url, $cont_name)'
+      run: python -c 'import main; save_to_blob(revised_worksplace_annot_totals($api_key, $wkspace), $acct_url, $cont_name)'
 
     - name: Get Azure connection
       uses: azure/login@v2
