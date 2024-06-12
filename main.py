@@ -128,4 +128,4 @@ def write_to_csv(df_list):
     except Exception as ex:
         print(f'Exception: {ex}')
 
-revised_worksplace_annot_totals()
+write_to_csv(revised_worksplace_annot_totals())
