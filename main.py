@@ -123,7 +123,7 @@ def write_to_csv(df_list):
 
         for df in df_list:
             local_file_name = f'{f_name_prefix}_{df[1]}.csv'
-            df[0].to_csv('local_file_name', index=False)
+            df[0].to_csv(local_file_name, index=False)
 
     except Exception as ex:
         print(f'Exception: {ex}')
