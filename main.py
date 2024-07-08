@@ -119,10 +119,10 @@ def write_to_csv(df_list):
         f_name_date = str(datetime.now().date())
         f_name_hour = str(datetime.now().time().hour)
 
-        f_name_prefix = f'{f_name_date}_{f_name_hour}'
+        f_name_date_time = f'{f_name_date}_{f_name_hour}'
 
         for df in df_list:
-            local_file_name = f'{f_name_prefix}_{df[1]}.csv'
+            local_file_name = f'{df[1]}_{f_name_date_time}.csv'
             df[0].to_csv(local_file_name, index=False)
 
     except Exception as ex:
