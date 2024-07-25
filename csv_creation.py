@@ -16,8 +16,8 @@ def extract_date_hour(file_name):
 
 
 def compare_job_dfs():
-    master_csv_loc = r'C:\Users\c883206\OneDrive - BNSF Railway\image_utils\image_utils\by_job.csv'
-    hourly_csv_loc = r'C:\Users\c883206\OneDrive - BNSF Railway\Annotation Dashboard and Reporting\annot_stats_testing'
+    master_csv_loc = r'./by_job.csv'
+    hourly_csv_loc = r'.'
 
     if os.path.exists(master_csv_loc):
         full_df = pandas.read_csv(master_csv_loc)
