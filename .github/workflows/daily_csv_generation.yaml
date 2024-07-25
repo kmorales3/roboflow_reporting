@@ -1,0 +1,52 @@
+# This is a basic workflow to help you get started with Actions
+
+name: create_csv_for_PBI
+
+# Controls when the workflow will run
+on:
+ schedule:
+   - cron: "38 2 */1 * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repo to runner
+      uses: actions/checkout@v4
+
+    - name: install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pandas azure-identity azure-storage-blob dateutil
+        python -m pip install --force-reinstall numpy==1.26.0
+
+    - name: Get Azure connection
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Download from blob storage
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          ls
+          az account show
+          az storage blob download -c rfstats -d . --account-key ${{ secrets.ACCOUNT_KEY }} --account-name ${{ secrets.ACCOUNT_NAME }} --auth-mode key --pattern "*job_summary*"
+
+    - name: run main.py
+      run: python -m data_collection
+
+    - name: Upload to blob storage
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          ls
+          az account show
+          az storage blob upload-batch --destination rfstats --source . --account-key ${{ secrets.ACCOUNT_KEY }} --account-name ${{ secrets.ACCOUNT_NAME }} --auth-mode key --pattern "*.csv"
+
+  # Azure logout
+    - name: logout
+      run: |
+            az logout
+      if: always()
