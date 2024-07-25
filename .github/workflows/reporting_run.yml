@@ -26,7 +26,7 @@ jobs:
         python -m pip install --force-reinstall numpy==1.26.0
 
     - name: run main.py
-      run: python -m main
+      run: python -m data_collection
 
     - name: Get Azure connection
       uses: azure/login@v2
