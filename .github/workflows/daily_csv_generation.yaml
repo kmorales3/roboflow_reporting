@@ -35,7 +35,7 @@ jobs:
         inlineScript: |
           ls
           az account show
-          az storage blob download -c rfstats -d . --account-key ${{ secrets.ACCOUNT_KEY }} --account-name ${{ secrets.ACCOUNT_NAME }} --auth-mode key --pattern "*job_summary*"
+          az storage blob download -c rfstats --account-key ${{ secrets.ACCOUNT_KEY }} --account-name ${{ secrets.ACCOUNT_NAME }} --auth-mode key
 
     - name: run main.py
       run: python -m data_collection
