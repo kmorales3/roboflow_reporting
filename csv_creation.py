@@ -3,7 +3,7 @@ import re
 from datetime import datetime
 
 import pandas
-from dateutil.tz import tz
+from dateutil import tz
 
 
 # Helper function to extract date and hour from the file name
