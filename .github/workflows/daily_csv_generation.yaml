@@ -7,8 +7,9 @@ name: create_csv_for_PBI
 
 # Controls when the workflow will run
 on:
- schedule:
-   - cron: "38 7 */1 * *"
+   workflow_dispatch:
+ # schedule:
+ #   - cron: "38 7 */1 * *"
 
 jobs:
   build:
