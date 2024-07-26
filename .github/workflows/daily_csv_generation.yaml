@@ -46,7 +46,7 @@ jobs:
         inlineScript: |
           ls
           az account show
-          az storage blob upload-batch --destination rfstats --source . --account-key ${{ secrets.ACCOUNT_KEY }} --account-name ${{ secrets.ACCOUNT_NAME }} --auth-mode key --pattern "*by*"
+          az storage blob upload-batch --destination rfstats --source . --account-key ${{ secrets.ACCOUNT_KEY }} --account-name ${{ secrets.ACCOUNT_NAME }} --auth-mode key --pattern "*by*" --overwrite
 
   # Azure logout
     - name: logout
