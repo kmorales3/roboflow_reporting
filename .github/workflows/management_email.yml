@@ -1,7 +1,7 @@
 name: Weekly Report
 
 on:
-  
+  workflow_dispatch:
   schedule:
     - cron: '0 14 * * 5'  # Run at 2 PM every Friday
 
