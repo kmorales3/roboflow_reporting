@@ -24,11 +24,11 @@ jobs:
 
       - name: Run weekly report script
         env:
-          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
+          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.CONN_STRING }}
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-          RECIPIENT_EMAILS: ${{ secrets.RECIPIENT_EMAILS }}
-          CC_EMAILS: ${{ secrets.CC_EMAILS }}
+          RECIPIENT_EMAILS: ${{ secrets.TO_EMAIL_ADDRESSES }}
+          CC_EMAILS: ${{ secrets.CC_EMAIL_ADDRESSES }}
         run: |
           python - <<EOF
           import os
@@ -48,7 +48,7 @@ jobs:
 
           # Initialize Azure Blob Service
           blob_service_client = BlobServiceClient.from_connection_string(AZURE_STORAGE_CONNECTION_STRING)
-          container_client = blob_service_client.get_container_client('your-container-name')
+          container_client = blob_service_client.get_container_client('rfstats')
 
           # Calculate dates for the last 11 Fridays
           today = datetime.utcnow()
@@ -62,7 +62,7 @@ jobs:
             blob_name = https://url.usb.m.mimecastprotect.com/s/fqJbCP6qDGiJEMZMFzfBunLJ-o?domain=blob.name
             if blob_name.endswith('.csv'):
               for friday in fridays:
-                if friday.strftime('%Y-%m-%d-1300') in blob_name:
+                if friday.strftime('hl_summary_df_%Y-%m-%d-16') in blob_name:
                   csv_files.append(blob_name)
                   break
 
