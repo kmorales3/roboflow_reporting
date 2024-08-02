@@ -1,0 +1,122 @@
+name: Weekly Report
+
+on:
+  
+  schedule:
+    - cron: '0 14 * * 5'  # Run at 2 PM every Friday
+
+jobs:
+  weekly_report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install pandas azure-storage-blob smtplib email
+
+      - name: Run weekly report script
+        env:
+          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          RECIPIENT_EMAILS: ${{ secrets.RECIPIENT_EMAILS }}
+          CC_EMAILS: ${{ secrets.CC_EMAILS }}
+        run: |
+          python - <<EOF
+          import os
+          from datetime import datetime, timedelta
+          import pandas as pd
+          from azure.storage.blob import BlobServiceClient, ContainerClient
+          import smtplib
+          from email.mime.text import MIMEText
+          from email.mime.multipart import MIMEMultipart
+
+          # Define constants
+          AZURE_STORAGE_CONNECTION_STRING = os.getenv('AZURE_STORAGE_CONNECTION_STRING')
+          SMTP_USER = os.getenv('SMTP_USER')
+          SMTP_PASSWORD = os.getenv('SMTP_PASSWORD')
+          RECIPIENT_EMAILS = os.getenv('RECIPIENT_EMAILS').split(',')
+          CC_EMAILS = os.getenv('CC_EMAILS').split(',')
+
+          # Initialize Azure Blob Service
+          blob_service_client = BlobServiceClient.from_connection_string(AZURE_STORAGE_CONNECTION_STRING)
+          container_client = blob_service_client.get_container_client('your-container-name')
+
+          # Calculate dates for the last 11 Fridays
+          today = datetime.utcnow()
+          last_friday = today - timedelta(days=(today.weekday() - 4) % 7)
+          fridays = [last_friday - timedelta(weeks=i) for i in range(11)]
+
+          # List blobs and filter the relevant CSV files
+          blobs = container_client.list_blobs()
+          csv_files = []
+          for blob in blobs:
+            blob_name = https://url.usb.m.mimecastprotect.com/s/fqJbCP6qDGiJEMZMFzfBunLJ-o?domain=blob.name
+            if blob_name.endswith('.csv'):
+              for friday in fridays:
+                if friday.strftime('%Y-%m-%d-1300') in blob_name:
+                  csv_files.append(blob_name)
+                  break
+
+          # Download CSV files and read them into dataframes
+          dfs = []
+          for csv_file in csv_files:
+            blob_client = container_client.get_blob_client(csv_file)
+            with open(csv_file, 'wb') as f:
+              f.write(blob_client.download_blob().readall())
+            df = pd.read_csv(csv_file)
+            df['date'] = csv_file.split('_')[0]  # Extract date from filename
+            dfs.append(df)
+
+          # Combine dataframes
+          combined_df = pd.concat(dfs)
+
+          # Group by 'project' and calculate differences
+          grouped = combined_df.groupby('project')
+          diff_dfs = [grouped.get_group(name).diff().dropna().reset_index(drop=True) for name in grouped.groups]
+
+          # Combine diff dataframes
+          combined_diff_df = pd.concat(diff_dfs).reset_index(drop=True)
+
+          # Draft the email content
+          original_data_html = combined_df.head(10).to_html(index=False)
+          diff_data_html = combined_diff_df.head(10).to_html(index=False)
+          email_content = f"""
+          <html>
+          <body>
+              <h2>Weekly Annotations for {fridays[-1].strftime('%Y-%m-%d')} to {fridays[0].strftime('%Y-%m-%d')}</h2>
+              <h3>Original Data (First 10 Rows):</h3>
+              {original_data_html}
+              <h3>Differences Data (First 10 Rows):</h3>
+              {diff_data_html}
+          </body>
+          </html>
+          """
+
+          # Set up the email
+          msg = MIMEMultipart()
+          msg['From'] = SMTP_USER
+          msg['To'] = ', '.join(RECIPIENT_EMAILS)
+          msg['Cc'] = ', '.join(CC_EMAILS)
+          msg['Subject'] = f"Weekly Annotations for {fridays[-1].strftime('%Y-%m-%d')} to {fridays[0].strftime('%Y-%m-%d')}"
+          msg.attach(MIMEText(email_content, 'html'))
+
+          # Send the email
+          try:
+              server = smtplib.SMTP('smtp.office365.com', 587)
+              server.starttls()
+              server.login(SMTP_USER, SMTP_PASSWORD)
+              server.sendmail(SMTP_USER, RECIPIENT_EMAILS + CC_EMAILS, msg.as_string())
+              server.quit()
+              print('Email sent successfully')
+          except Exception as e:
+              print(f'Error: {e}')
+          EOF
