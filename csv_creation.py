@@ -16,7 +16,7 @@ def extract_date_hour(file_name):
 
 
 def compare_job_dfs():
-    master_csv_loc = r'.by_job.csv"'
+    master_csv_loc = r'./by_job.csv'
     hourly_csv_loc = r'.'
 
     if os.path.exists(master_csv_loc):
@@ -24,9 +24,8 @@ def compare_job_dfs():
         full_df['date_tm_comb'] = full_df["date"] + '_' + full_df["hour"].astype(str)
     else:
         full_df = pandas.DataFrame(columns=['date', 'hour', 'project', 'job_status', 'job_name', 'job_id', 'labeler',
-                                            'reviewer', 'image_count', 'approved', 'rejected', 'annotated',
-                                            'unannotated',
-                                            'date_tm_comb'])
+                                        'reviewer', 'image_count', 'approved', 'rejected', 'annotated', 'unannotated',
+                                        'date_tm_comb'])
 
     job_df_diff_list = []
     new_data_df = pandas.DataFrame()
@@ -63,19 +62,14 @@ def compare_job_dfs():
                     temp_diff_df.iloc[0]['unannotated'] = 0
                     temp_diff_df = temp_diff_df.fillna(int(0))
                     temp_diff_df = temp_diff_df.clip(0)
-                    temp_diff_df = pandas.concat([listed_job[['date_tm_comb', 'date', 'hour', 'project',
-                                                              'job_status', 'job_name', 'job_id', 'labeler',
-                                                              'reviewer']], temp_diff_df], axis=1)
-                    temp_diff_df = temp_diff_df.drop(
-                        temp_diff_df[(temp_diff_df.annotated < 1) & (temp_diff_df.unannotated < 1)].index)
-                    if not temp_diff_df.empty:
-                        job_df_diff_list.append(temp_diff_df)
+                    job_df_diff_list.append(pandas.concat([listed_job[['date_tm_comb', 'date', 'hour', 'project',
+                                                                   'job_status', 'job_name', 'job_id', 'labeler',
+                                                                   'reviewer']], temp_diff_df], axis=1))
 
         combined_job_diff_df = pandas.concat(job_df_diff_list).sort_values(by=['date', 'hour', 'labeler'])
 
         combined_job_diff_df['labeler'] = combined_job_diff_df['labeler'].str.replace(r'\d', '', regex=True)
         combined_job_diff_df['workspace'] = 'Ground AYC'
-        # combined_job_diff_df = combined_job_diff_df.drop(combined_job_diff_df[(combined_job_diff_df.annotated < 1) & (combined_job_diff_df.unannotated < 1)].index)
 
         combined_job_diff_df.to_csv('by_job.csv', index=False)
 
