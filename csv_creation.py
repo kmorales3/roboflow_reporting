@@ -70,6 +70,7 @@ def compare_job_dfs():
 
         combined_job_diff_df['labeler'] = combined_job_diff_df['labeler'].str.replace(r'\d', '', regex=True)
         combined_job_diff_df['workspace'] = 'Ground AYC'
+        combined_job_diff_df = combined_job_diff_df.drop(combined_job_diff_df[(combined_job_diff_df.annotated < 1) & (combined_job_diff_df.unannotated < 1)].index)
 
         combined_job_diff_df.to_csv('by_job.csv', index=False)
 
