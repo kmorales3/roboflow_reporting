@@ -1,0 +1,122 @@
+[
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "re",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "re",
+        "description": "re",
+        "detail": "re",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "pandas",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pandas",
+        "description": "pandas",
+        "detail": "pandas",
+        "documentation": {}
+    },
+    {
+        "label": "tz",
+        "importPath": "dateutil",
+        "description": "dateutil",
+        "isExtraImport": true,
+        "detail": "dateutil",
+        "documentation": {}
+    },
+    {
+        "label": "requests",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "requests",
+        "description": "requests",
+        "detail": "requests",
+        "documentation": {}
+    },
+    {
+        "label": "DefaultAzureCredential",
+        "importPath": "azure.identity",
+        "description": "azure.identity",
+        "isExtraImport": true,
+        "detail": "azure.identity",
+        "documentation": {}
+    },
+    {
+        "label": "BlobServiceClient",
+        "importPath": "azure.storage.blob",
+        "description": "azure.storage.blob",
+        "isExtraImport": true,
+        "detail": "azure.storage.blob",
+        "documentation": {}
+    },
+    {
+        "label": "Roboflow",
+        "importPath": "roboflow",
+        "description": "roboflow",
+        "isExtraImport": true,
+        "detail": "roboflow",
+        "documentation": {}
+    },
+    {
+        "label": "extract_date_hour",
+        "kind": 2,
+        "importPath": "csv_creation",
+        "description": "csv_creation",
+        "peekOfCode": "def extract_date_hour(file_name):\n    match = re.search(r'\\d{4}-\\d{2}-\\d{2}_\\d{1,2}', file_name)\n    if match:\n        datetime_str = match.group()\n        return datetime_str\n    return None\ndef compare_job_dfs():\n    master_csv_loc = r'./by_job.csv'\n    hourly_csv_loc = r'.'\n    if os.path.exists(master_csv_loc):",
+        "detail": "csv_creation",
+        "documentation": {}
+    },
+    {
+        "label": "compare_job_dfs",
+        "kind": 2,
+        "importPath": "csv_creation",
+        "description": "csv_creation",
+        "peekOfCode": "def compare_job_dfs():\n    master_csv_loc = r'./by_job.csv'\n    hourly_csv_loc = r'.'\n    if os.path.exists(master_csv_loc):\n        full_df = pandas.read_csv(master_csv_loc)\n        full_df['date_tm_comb'] = full_df[\"date\"] + '_' + full_df[\"hour\"].astype(str)\n    else:\n        full_df = pandas.DataFrame(columns=['date', 'hour', 'project', 'job_status', 'job_name', 'job_id', 'labeler',\n                                        'reviewer', 'image_count', 'approved', 'rejected', 'annotated', 'unannotated',\n                                        'date_tm_comb'])",
+        "detail": "csv_creation",
+        "documentation": {}
+    },
+    {
+        "label": "revised_worksplace_annot_totals",
+        "kind": 2,
+        "importPath": "data_collection",
+        "description": "data_collection",
+        "peekOfCode": "def revised_worksplace_annot_totals():\n    api_key = os.getenv('api_key')\n    workspace = os.getenv('wkspace')\n    hl_summary_ls = []\n    detail_summary_ls = []\n    job_summary_ls = []\n    rf = Roboflow(api_key)\n    projects = rf.workspace(workspace).project_list\n    for project in projects:\n        # job status detail in the format: [0]total images, [1]approved images, [2]rejected images, [3]annotated images,",
+        "detail": "data_collection",
+        "documentation": {}
+    },
+    {
+        "label": "write_to_csv",
+        "kind": 2,
+        "importPath": "data_collection",
+        "description": "data_collection",
+        "peekOfCode": "def write_to_csv(df_list):\n    try:\n        f_name_date = str(datetime.now().date())\n        f_name_hour = str(datetime.now().time().hour)\n        f_name_date_time = f'{f_name_date}_{f_name_hour}'\n        for df in df_list:\n            local_file_name = f'{df[1]}_{f_name_date_time}.csv'\n            df[0].to_csv(local_file_name, index=False)\n    except Exception as ex:\n        print(f'Exception: {ex}')",
+        "detail": "data_collection",
+        "documentation": {}
+    }
+]
