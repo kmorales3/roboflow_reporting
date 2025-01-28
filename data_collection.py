@@ -3,8 +3,6 @@ import os
 
 import pandas
 import requests
-from azure.identity import DefaultAzureCredential
-from azure.storage.blob import BlobServiceClient
 from roboflow import Roboflow
 
 
@@ -47,6 +45,8 @@ def revised_worksplace_annot_totals():
                     print(f'Error at job: {job["name"]}')
                     for item in job:
                         print(item)
+            except KeyError:
+                continue
 
             if job['status'] == 'assigned':
                 assigned_summary_detail[0] += job['numImages']
